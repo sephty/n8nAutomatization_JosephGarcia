@@ -67,9 +67,9 @@ Este proyecto implementa un **sistema automatizado end-to-end** para:
 
 ## � Flujo del Sistema
 
-![Flujo del Sistema de Webhook](image.png)
+![Flujo del Sistema de Webhook](imgs/image.png)
 
-![Flujo del Sistema de Telegram](image1.png)
+![Flujo del Sistema de Telegram](imgs/image1.png)
 
 ---
 
