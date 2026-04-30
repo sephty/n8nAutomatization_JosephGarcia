@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justificación de Inasistencia - CampusLands</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="badge"><span class="dot"></span> CampusLands</div>
+      <h1>Justificación de inasistencia</h1>
+      <p class="subtitle">Completa el formulario para registrar y justificar tu ausencia.</p>
+    </div>
+
+  <div class="section-label">Datos personales</div>
+    <div class="row">
+      <div class="field">
+        <label for="name">Nombre completo</label>
+        <input type="text" id="name" placeholder="Nombre Completo" required>
+      </div>
+      <div class="field">
+        <label for="student-id">ID de estudiante</label>
+        <input type="text" id="student-id" placeholder="20241234" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="email">Correo institucional</label>
+      <input type="email" id="email" placeholder="@gmail.edu" required>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Detalle de la ausencia</div>
+
+    <div class="field">
+      <label for="reason">Motivo de inasistencia</label>
+      <select id="reason" required>
+        <option value="" disabled selected>Selecciona un motivo...</option>
+        <option value="medico">Cita o emergencia médica</option>
+        <option value="familiar">Situación familiar</option>
+        <option value="laboral">Compromisos laborales</option>
+        <option value="transporte">Problemas de transporte</option>
+        <option value="fuerza_mayor">Fuerza mayor / desastre</option>
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="detail">Descripción breve</label>
+      <textarea id="detail" placeholder="Explica brevemente la situación..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Documento de soporte</div>
+
+    <div class="field">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf" data-allowed-types="image/jpeg,image/png,image/gif,image/webp,application/pdf">
+        <div class="upload-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 2v8M5 5l3-3 3 3M3 11v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="var(--color-text-secondary)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="upload-label">Adjuntar soporte</div>
+        <div class="upload-sub">Imagen o PDF · máx. 5 MB</div>
+      </div>
+      <div class="file-preview" id="filePreview">
+        <img class="img-thumb" id="imgThumb" style="display:none">
+        <span class="file-icon" id="fileExt">PDF</span>
+        <span class="file-name" id="fileName">documento.pdf</span>
+        <span class="file-size" id="fileSize">1.2 MB</span>
+        <button class="remove-file" id="removeFile" title="Eliminar archivo">×</button>
+      </div>
+      <p class="note">
+        <span class="note-icon">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.25" stroke="var(--color-text-tertiary)" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="var(--color-text-tertiary)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </span>
+        El archivo se envía directamente a Google Drive junto al formulario.
+      </p>
+    </div>
+
+    <button class="submit-btn" id="btnSubmit">
+      <div class="btn-inner">
+        <span id="btnText">Enviar justificación</span>
+        <div class="spinner" id="spinner"></div>
+      </div>
+    </button>
+    <div class="msg" id="response-msg"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

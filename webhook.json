@@ -1,0 +1,1182 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c1d57ee3-358b-4f11-9803-42c87144cd6a",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        464
+      ],
+      "id": "411e3b70-b69e-47e3-8970-22f66b46eec5",
+      "name": "Webhook",
+      "webhookId": "db1cad8b-ffb1-4047-8912-20a871e89e4f"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23dfe4ec-1dbd-4837-ba85-660f70b2e005",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "7d32a879-425a-42f9-8cec-dc5fe294e344",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "091ed3d5-cb6d-42a9-8c4d-59414cbafedf",
+              "name": "student_id",
+              "value": "={{ $json.body.student_id }}",
+              "type": "string"
+            },
+            {
+              "id": "416e40dd-3e9b-4ca5-9470-d08c3eee4e0d",
+              "name": "reason",
+              "value": "={{ $json.body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "44bb5ff7-a182-4340-a7aa-4973ab7324b7",
+              "name": "detail",
+              "value": "={{ $json.body.detail }}",
+              "type": "string"
+            },
+            {
+              "id": "5346849f-0949-4f33-b79b-d03bfb91f3f3",
+              "name": "submitted_at",
+              "value": "={{ $json.body.submitted_at }}",
+              "type": "string"
+            },
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "filename",
+              "value": "={{ $json.body.filename }}",
+              "type": "string"
+            },
+            {
+              "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+              "name": "mime_type",
+              "value": "={{ $json.body.mime_type }}",
+              "type": "string"
+            },
+            {
+              "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+              "name": "request_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d4e5f6a7-b8c9-0123-def1-234567890123",
+              "name": "status",
+              "value": "pending",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "40d267de-5424-496d-b133-a29ad73fcbc6",
+      "name": "Extract Form Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -912,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "={{ $binary.file }}",
+        "name": "={{ $json.student_id }}_{{ $json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1me34AJotFBkWh0Bdyx350izdxpT8NHvl",
+          "mode": "list",
+          "cachedResultName": "Inasistencias_D1",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1me34AJotFBkWh0Bdyx350izdxpT8NHvl"
+        },
+        "options": {
+          "simplifyOutput": true
+        }
+      },
+      "id": "0a327969-d64c-4e0c-b3ff-4d0e28aab00f",
+      "name": "Upload File to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -688,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5Bb8rULeL3xGrDpt",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ",
+          "mode": "list",
+          "cachedResultName": "gestion_inasistencias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1409994013,
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit#gid=1409994013"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID_Solicitud": "={{ String(Number($(\"Get Last ID\").item.json.ID_Solicitud || 0) + 1).padStart(6, \"0\") }}",
+            "ID_Estudiante": "={{ $(\"Extract Form Data\").item.json.student_id }}",
+            "Nombre": "={{ $(\"Extract Form Data\").item.json.name }}",
+            "Correo": "={{ $(\"Extract Form Data\").item.json.email }}",
+            "Fecha_Envío": "={{ $(\"Extract Form Data\").item.json.submitted_at.split(\"T\")[0] }}",
+            "Motivo": "={{ $(\"Extract Form Data\").item.json.reason }}",
+            "URL_Archivo": "={{ $(\"Prepare File Info\").item.json.fileUrl }}",
+            "Clasificación_IA": "={{ $(\"Calculate AI Metrics\").item.json.ai_classification }}",
+            "Confianza_%": "={{ $(\"Calculate AI Metrics\").item.json.confidence_score }}",
+            "Texto_OCR": "={{ $('Calculate AI Metrics').item.json.ocr_text }}",
+            "Estado": "={{ $('No Operation, do nothing').item.json.estado }}",
+            "Revisado_Por": "={{ $('No Operation, do nothing').item.json.revisado_por }}",
+            "Fecha_Resolución": "={{ $('No Operation, do nothing').item.json.fecha_resolucion }}",
+            "Log_Error": "={{ $(\"Check for Duplicates\").all().length > 1 ? \"Posible duplicado detectado\" : \"\" }}",
+            "Timestamp_Proceso": "={{ $now.toFormat(\"yyyy-MM-dd HH:mm:ss\") }}",
+            "Razon": "={{ $('Extract Form Data').item.json.detail }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID_Solicitud",
+              "displayName": "ID_Solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID_Estudiante",
+              "displayName": "ID_Estudiante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Correo",
+              "displayName": "Correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha_Envío",
+              "displayName": "Fecha_Envío",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Motivo",
+              "displayName": "Motivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Razon",
+              "displayName": "Razon",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL_Archivo",
+              "displayName": "URL_Archivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Clasificación_IA",
+              "displayName": "Clasificación_IA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confianza_%",
+              "displayName": "Confianza_%",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Texto_OCR",
+              "displayName": "Texto_OCR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revisado_Por",
+              "displayName": "Revisado_Por",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha_Resolución",
+              "displayName": "Fecha_Resolución",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp_Proceso",
+              "displayName": "Timestamp_Proceso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Log_Error",
+              "displayName": "Log_Error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "032d794c-7b40-4cf0-acf5-2ceeec1fd593",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2576,
+        464
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vqjoGQoMV0qahF3b",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const input = $input.item.json;\n\n// Extract response from various possible structures\nlet response = \"\";\nif (input.output && Array.isArray(input.output) && input.output.length > 0) {\n  const firstOutput = input.output[0];\n  if (firstOutput.content && Array.isArray(firstOutput.content) && firstOutput.content.length > 0) {\n    response = firstOutput.content[0].text || \"\";\n  } else if (firstOutput.text) {\n    response = firstOutput.text;\n  }\n} else if (input.message?.content) {\n  response = input.message.content;\n} else if (input.message) {\n  response = input.message;\n} else if (input.text) {\n  response = input.text;\n} else if (input.response) {\n  response = input.response;\n} else {\n  response = JSON.stringify(input);\n}\n\nlet parsed;\ntry {\n  let cleanResponse = response;\n  if (typeof response === \"string\") {\n    const jsonMatch = response.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\n    if (jsonMatch) {\n      cleanResponse = jsonMatch[1].trim();\n    }\n  }\n  parsed = typeof cleanResponse === \"string\" ? JSON.parse(cleanResponse) : cleanResponse;\n} catch (e) {\n  parsed = {\n    clasificacion: \"Dudosa\",\n    confianza: 50,\n    texto_ocr: \"\",\n    motivo_decision: \"Error parsing AI response: \" + e.message,\n    palabras_clave: []\n  };\n}\n\nreturn {\n  json: {\n    ai_classification: parsed.clasificacion || \"Dudosa\",\n    confidence_score: parsed.confianza || 50,\n    ocr_text: parsed.texto_ocr || \"\",\n    ai_reasoning: parsed.motivo_decision || \"\",\n    palabras_clave: Array.isArray(parsed.palabras_clave) ? parsed.palabras_clave : [],\n    full_response: response\n  }\n};"
+      },
+      "id": "db1b8d54-667b-48eb-805c-a437dcec00e4",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "outputFieldName": "ai_start_time",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "id": "6a215992-e302-40f8-84fa-cd303bfc920f",
+      "name": "Store AI Start Time",
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "metric-002",
+              "name": "palabras_clave",
+              "value": "={{ $json.palabras_clave.join(\", \") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "0c331a32-4cd1-4a6a-b67f-a53abce4d673",
+      "name": "Calculate AI Metrics",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1008,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ",
+          "mode": "list",
+          "cachedResultName": "gestion_inasistencias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1409994013,
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit#gid=1409994013"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID_Estudiante",
+              "lookupValue": "={{ $(\"Extract Form Data\").item.json.student_id }}"
+            },
+            {
+              "lookupColumn": "Motivo",
+              "lookupValue": "={{ $(\"Extract Form Data\").item.json.reason }}"
+            },
+            {
+              "lookupColumn": "Fecha_Envío",
+              "lookupValue": "={{ $(\"Extract Form Data\").item.json.submitted_at }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2ea0816-3fdd-42b0-9a82-f2b814c09279",
+      "name": "Check for Duplicates",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1904,
+        464
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vqjoGQoMV0qahF3b",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "6132726794",
+        "text": "=🔔 *Solicitud {{ String(Number($(\"Get Last ID\").item.json.ID_Solicitud || 0) + 1).padStart(6, \"0\") }}* Estado: {{ $('No Operation, do nothing').item.json.estado }} Clasificación: {{ $(\"Calculate AI Metrics\").item.json.ai_classification }} ({{ $(\"Calculate AI Metrics\").item.json.confidence_score }}%) Motivo IA: {{ $(\"Calculate AI Metrics\").item.json.ai_reasoning }} {{ $('No Operation, do nothing').item.json.estado === \"En revisión\" ? \"⏳ Un administrativo revisará tu caso pronto.\" : \"\" }} ",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "9faebe0a-ae99-4b75-a121-fbfed5ce7fb4",
+      "name": "Send Status Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2800,
+        464
+      ],
+      "webhookId": "ba0d8ccd-acf6-4486-82af-81c6df0d49bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.fileType }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "51774e1f-dc2b-4daa-a8c0-f25fd848c7f4",
+      "name": "Check File Type",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -16,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "=You are a document validator for an academic absence justification system.\nRespond ONLY with a valid JSON object. No markdown, no explanation, no extra text.\n{\n  \"clasificacion\": \"Válida\" | \"Inválida\" | \"Dudosa\",\n  \"confianza\": <integer 0-100>,\n  \"texto_ocr\": \"<extracted text max 300 chars>\",\n  \"motivo_decision\": \"<one sentence>\",\n  \"palabras_clave\": [\"keyword1\", \"keyword2\"]\n}\nRules:\n- Válida: Document clearly and fully justifies the absence (medical cert, official letter).\n- Dudosa: Related but incomplete, unclear, or partially readable.\n- Inválida: Unrelated, unreadable, blank, or missing.\n- Only return confianza > 90 if you are completely certain, aswell if it has enough evidence of it being a real document (real medical names)\n\nStudent reason stated: {{ $(\"Extract Form Data\").item.json.reason }}\n\nReason is the ocr",
+        "inputType": "base64",
+        "binaryPropertyName": "=data",
+        "options": {
+          "detail": "high",
+          "maxTokens": 1500
+        }
+      },
+      "id": "7a688a22-2366-4ed7-831d-d2bc71e81933",
+      "name": "Analyze Image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        368
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "iakGIBXi4ke4MuAp",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "={{ $('Webhook').item.binary['file'] }}",
+        "options": {}
+      },
+      "id": "8493e85a-47ce-4724-9b66-df8cea7604ca",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "file-url",
+              "name": "fileUrl",
+              "value": "=https://drive.google.com/file/d/{{ $json.id }}/view?usp=drive_link",
+              "type": "string"
+            },
+            {
+              "id": "file-type",
+              "name": "fileType",
+              "value": "={{ $json.mimeType.startsWith(\"image/\") ? \"image\" : \"pdf\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "45624823-748e-4e81-a7f9-16a88cd6f62b",
+      "name": "Prepare File Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-1",
+              "name": "estado",
+              "value": "Aprobada",
+              "type": "string"
+            },
+            {
+              "id": "status-2",
+              "name": "revisado_por",
+              "value": "auto",
+              "type": "string"
+            },
+            {
+              "id": "status-3",
+              "name": "fecha_resolucion",
+              "value": "={{ $now.toISODate() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "1250d6f0-e1ee-4996-b1b5-f058d481b53c",
+      "name": "Set Auto Approved",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-1",
+              "name": "estado",
+              "value": "Rechazada",
+              "type": "string"
+            },
+            {
+              "id": "status-2",
+              "name": "revisado_por",
+              "value": "auto",
+              "type": "string"
+            },
+            {
+              "id": "status-3",
+              "name": "fecha_resolucion",
+              "value": "={{ $now.toISODate() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "eadbe0ac-0744-4fbc-b11c-3e91d594cb2e",
+      "name": "Set Auto Rejected",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-1",
+              "name": "estado",
+              "value": "En revisión",
+              "type": "string"
+            },
+            {
+              "id": "status-2",
+              "name": "revisado_por",
+              "value": "pendiente",
+              "type": "string"
+            },
+            {
+              "id": "status-3",
+              "name": "fecha_resolucion",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "50bb1189-aa37-477a-b81c-2978737d4421",
+      "name": "Set Manual Review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1456,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.confidence_score }}",
+                    "rightValue": 90,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    },
+                    "id": "88228e15-c541-4d77-9ca2-11288ba26f41"
+                  },
+                  {
+                    "leftValue": "={{ $json.ai_classification }}",
+                    "rightValue": "Válida",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6f9c029b-dadb-4334-81b1-3984cfd6fd86"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.confidence_score }}",
+                    "rightValue": 50,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "599d137f-3ec1-439a-ab81-dac756c84dc0"
+                  },
+                  {
+                    "leftValue": "={{ $json.ai_classification }}",
+                    "rightValue": "Inválida",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c19e4463-5f67-4870-87dc-2e30988e6e26"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": false
+        }
+      },
+      "id": "a29da3c3-99dd-47a7-aa1b-8e38beaef8e8",
+      "name": "Route by Confidence",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1232,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a document validator for an academic absence justification system.\nRespond ONLY with a valid JSON object. No markdown, no explanation, no extra text.\n{\n  \"clasificacion\": \"Válida\" | \"Inválida\" | \"Dudosa\",\n  \"confianza\": <integer 0-100>,\n  \"texto_ocr\": \"<extracted text max 300 chars>\",\n  \"motivo_decision\": \"<one sentence>\",\n  \"palabras_clave\": [\"keyword1\", \"keyword2\"]\n}\nRules:\n- Válida: Document clearly and fully justifies the absence (medical cert, official letter).\n- Dudosa: Related but incomplete, unclear, or partially readable.\n- Inválida: Unrelated, unreadable, blank, or missing.\n- Only return confianza > 90 if you are completely certain, aswell if it has enough evidence of it being a real document (real medical names)"
+            },
+            {
+              "content": "=File type: {{ $(\"Prepare File Info\").item.json.fileType }}\nFile URL: {{ $(\"Prepare File Info\").item.json.fileUrl }}\nStudent reason stated: {{ $(\"Extract Form Data\").item.json.reason }}\n\nExtracted text:{{ $json.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 1500
+        }
+      },
+      "id": "4c288bc0-0b91-4023-82ff-49226032739a",
+      "name": "Analyze PDF",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "iakGIBXi4ke4MuAp",
+          "name": "n8n free OpenAI API credits"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ",
+          "mode": "list",
+          "cachedResultName": "gestion_inasistencias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1409994013,
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit#gid=1409994013"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "id": "d0eeddc4-5216-49e4-bbea-9eb38853c75b",
+      "name": "Get Last ID",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2128,
+        464
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vqjoGQoMV0qahF3b",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        464
+      ],
+      "id": "d27b8c25-af25-4d78-9872-8a92d49acc52",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.item.json;\n\n// data is the array [ {id, content...}, {id, content...} ]\nlet response = \"\";\n\ntry {\n  const messages = Array.isArray(data) ? data : [data];\n  for (const msg of messages) {\n    if (msg.content && Array.isArray(msg.content)) {\n      const block = msg.content.find(c => c.text && c.text.trim() !== \"\");\n      if (block) {\n        response = block.text;\n        break;\n      }\n    }\n  }\n  if (!response) response = JSON.stringify(data);\n} catch (e) {\n  response = JSON.stringify(data);\n}\n\nlet parsed;\ntry {\n  let cleanResponse = response;\n  const jsonMatch = cleanResponse.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\n  if (jsonMatch) cleanResponse = jsonMatch[1].trim();\n  parsed = JSON.parse(cleanResponse);\n} catch (e) {\n  parsed = {\n    clasificacion: \"Dudosa\",\n    confianza: 50,\n    texto_ocr: \"\",\n    motivo_decision: \"Error parsing AI response: \" + e.message,\n    palabras_clave: []\n  };\n}\n\nreturn {\n  json: {\n    ai_classification: parsed.clasificacion || \"Dudosa\",\n    confidence_score: typeof parsed.confianza === \"number\" ? parsed.confianza : 50,\n    ocr_text: parsed.texto_ocr || \"\",\n    ai_reasoning: parsed.motivo_decision || \"\",\n    palabras_clave: Array.isArray(parsed.palabras_clave) ? parsed.palabras_clave : [],\n    full_response: response\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        368
+      ],
+      "id": "28d06b05-b959-4972-bf0b-5b21ae6592a5",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Upload File to Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        368
+      ],
+      "id": "0f1860f2-5c4b-49b2-827b-4faff350ca59",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5Bb8rULeL3xGrDpt",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2352,
+        464
+      ],
+      "id": "92235598-c5ca-4090-b898-73fcc2e64272",
+      "name": "Get the Last Row"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Form Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Form Data": {
+      "main": [
+        [
+          {
+            "node": "Upload File to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload File to Drive": {
+      "main": [
+        [
+          {
+            "node": "Prepare File Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Send Status Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Calculate AI Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store AI Start Time": {
+      "main": [
+        [
+          {
+            "node": "Check File Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate AI Metrics": {
+      "main": [
+        [
+          {
+            "node": "Route by Confidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Get Last ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Status Notification": {
+      "main": [
+        []
+      ]
+    },
+    "Check File Type": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Analyze PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare File Info": {
+      "main": [
+        [
+          {
+            "node": "Store AI Start Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Auto Approved": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Auto Rejected": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Manual Review": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Confidence": {
+      "main": [
+        [
+          {
+            "node": "Set Auto Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Auto Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Manual Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze PDF": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Last ID": {
+      "main": [
+        [
+          {
+            "node": "Get the Last Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Check for Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Calculate AI Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the Last Row": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3bcb5351b8c63062421a95330f34ea678850e07530b9a7f57755f22ce7932797"
+  }
+}

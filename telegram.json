@@ -1,0 +1,765 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        1680
+      ],
+      "id": "51b8ec40-47d4-4edb-b8be-19cb387dd4a5",
+      "name": "Telegram Trigger",
+      "webhookId": "e8043af4-4e88-4dda-9124-52f39e858c21",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "Aprobada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "01a9521e-9abb-42f0-90ac-ac08adbe2674"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "aprobada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2bca9561-cba3-4c22-80e1-58f04a6385be",
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "Rechazada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "rechazada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9b98555a-6b49-4d13-9093-58457804c797",
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "En revisión",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "revision"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ae676453-8c07-480d-a458-0a9acd98dd49",
+      "name": "Route by Status",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
+        "text": "=✅ *Estado de Solicitud*\n\nID: {{ $json.ID_Solicitud }}\nEstudiante: {{ $json.Nombre }}\n\nTu justificación de ausencia ha sido *aprobada*.\n\nMotivo: {{ $json.Motivo }}\nRazon: {{ $json.Razon }}\nArchivo: {{ $json.URL_Archivo }}\nEnviado: {{ $json.Fecha_Envío }}\nProcesado: {{ $json.Timestamp_Proceso }}\n\nConfianza IA: {{ $json[\"Confianza_%\"] }}%",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "526672b3-b4ee-4fe3-9a28-65af63a39762",
+      "name": "Notify Approved",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        992
+      ],
+      "webhookId": "40eb3f72-3a4c-4f2c-b51b-6a7e1fe48add",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
+        "text": "=❌ *Estado de Solicitud*\n\nID: {{ $json.ID_Solicitud }}\nEstudiante: {{ $json.Nombre }}\n\nTu justificación de ausencia ha sido *rechazada*.\n\nMotivo indicado: {{ $json.Motivo }}\nRazon indicada:{{ $json.Razon }}\nArchivo: {{ $json.URL_Archivo }}\nEnviado: {{ $json.Fecha_Envío }}\n\n\nPor favor contacta a administración para más información o envía una nueva solicitud con documentación adecuada.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "68104f1b-3fc7-4179-b988-d50ef18c3977",
+      "name": "Notify Rejected",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        1184
+      ],
+      "webhookId": "cf20325a-56e9-470d-b602-9e5c2a548c08",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
+        "text": "=⏳ *Estado de Solicitud*\n\nID: {{ $json.ID_Solicitud }}\nEstudiante: {{ $json.Nombre }}\n\nTu justificación de ausencia está en *revisión manual*.\n\nMotivo: {{ $json.Motivo }}\nRazon indicada:{{ $json.Razon }}\nArchivo: {{ $json.URL_Archivo }}\nEnviado: {{ $json.Fecha_Envío }}\n\nUn administrativo revisará tu caso pronto. Serás notificado cuando se tome una decisión.\n\nConfianza IA: {{ $json[\"Confianza_%\"] }}%",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "fcb0f50b-6aa3-469e-923c-042cae6f31e7",
+      "name": "Notify Pending Review",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        1376
+      ],
+      "webhookId": "e1492018-7290-476d-8e67-e383840bd77b",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=Bienvenido al Sistema de Gestión de Ausencias de Campus\nComandos disponibles:\n/estado ID_Estudiante - Consulta el estado de tu solicitud de ausencia\n/ausencias ID_Estudiante - consulta tu historial de solicitudes\nEjemplo:\n/estado ABC12345\nRecibirás notificaciones automáticas cuando tu solicitud sea procesada.",
+        "additionalFields": {}
+      },
+      "id": "344041ca-f4b4-4b1f-ae05-4df415ae1fec",
+      "name": "Notify Help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -656,
+        2048
+      ],
+      "webhookId": "c4edf755-c70e-48db-91a1-30991faa024a",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cmd-estado",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/estado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith",
+                      "name": "filter.operator.startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "estado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cmd-ausencias",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/ausencias",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith",
+                      "name": "filter.operator.startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ausencias"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "1b30e572-2f82-482e-ac09-d36d2dcac9a2",
+      "name": "Route Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        1664
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ext-001",
+              "name": "student_id",
+              "value": "={{ $json.message.text.split(\" \")[1]?.toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "ext-002",
+              "name": "chat_id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "ext-003",
+              "name": "user_name",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "da49eadd-b58e-4e1d-bebf-d0d32dec5d73",
+      "name": "Extract Student ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        1504
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ",
+          "mode": "list",
+          "cachedResultName": "gestion_inasistencias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1409994013,
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit#gid=1409994013"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID_Estudiante",
+              "lookupValue": "={{ $json.student_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "68927c28-b283-4d7f-a31f-977a28ee572a",
+      "name": "Lookup Latest Request",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -448,
+        1296
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vqjoGQoMV0qahF3b",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
+        "text": "=❌ No se encontraron solicitudes.\n\nEl ID de estudiante \"{{ $(\"Extract Student ID\").item.json.student_id }}\" no tiene solicitudes registradas.\n\nPor favor verifica el ID e intenta nuevamente.\n\nUso: /estado TU_ID_ESTUDIANTE",
+        "additionalFields": {}
+      },
+      "id": "bbb697f2-3d19-49cf-9deb-70d20f49954c",
+      "name": "Notify Not Found (Estado)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1472
+      ],
+      "webhookId": "537372f7-5833-4267-b739-878cd653c8d7",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ",
+          "mode": "list",
+          "cachedResultName": "gestion_inasistencias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1409994013,
+          "mode": "list",
+          "cachedResultName": "Solicitudes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LX8Z0vj0hWy0HZ56yTzSMBrSQjJCoMHEO2q0kpWwVwQ/edit#gid=1409994013"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID_Estudiante",
+              "lookupValue": "={{ $json.student_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1610555-93cb-4050-a626-e7aceeb60f2e",
+      "name": "Lookup All Requests",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -448,
+        1824
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vqjoGQoMV0qahF3b",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "found-002",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt",
+                "name": "filter.operator.gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "51adce12-8c81-4579-98e0-4c4b43652fe0",
+      "name": "Check if Found (Ausencias)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        1824
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst studentId = $(\"Extract Student ID1\").first().json.student_id;\nconst chatId = $(\"Extract Student ID1\").first().json.chat_id;\n\nlet message = `📋 *Historial de Ausencias*\\n\\nID Estudiante: ${studentId}\\nTotal de solicitudes: ${items.length}\\n\\n`;\n\nitems.forEach((item, index) => {\n  const data = item.json;\n  const estado = data[\"Estado\"] || \"Pendiente\";\n  const statusEmoji = estado === \"Aprobada\" ? \"✅\" : estado === \"Rechazada\" ? \"❌\" : \"⏳\";\n  message += `${statusEmoji} *Solicitud ${data[\"ID_Solicitud\"]}*\\n`;\n  message += `Estado: ${estado}\\n`;\n  message += `Motivo: ${data[\"Motivo\"]}\\n`;\n  message += `Fecha: ${data[\"Fecha_Env\\u00edo\"]}\\n`;\n  message += `Clasificaci\\u00f3n IA: ${data[\"Clasificaci\\u00f3n_IA\"]} (${data[\"Confianza_%\"]}%)\\n`;\n  if (index < items.length - 1) message += \"\\n\";\n});\n\nreturn [{ \n  json: {\n    chat_id: chatId,\n    message_text: message\n  }\n}];"
+      },
+      "id": "07df1577-4ee2-438a-9f73-56c70a3cb0aa",
+      "name": "Format Historial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1824
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.message_text }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "d7718e80-29f1-48a7-98b6-ecf9f28b804e",
+      "name": "Send Historial",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1824
+      ],
+      "webhookId": "6389fa64-208b-46ee-89e3-2ddc1b1d1dca",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
+        "text": "=❌ No se encontraron ausencias.\n\nEl ID de estudiante \"{{ $(\"Extract Student ID\").item.json.student_id }}\" no tiene ausencias registradas.\n\nUso: /ausencias TU_ID_ESTUDIANTE",
+        "additionalFields": {}
+      },
+      "id": "df94b1c7-659b-448a-9675-0d0e59b1dfa1",
+      "name": "Notify Not Found (Ausencias)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        1984
+      ],
+      "webhookId": "cd1c4861-a19f-475f-a828-733b200c49cc",
+      "credentials": {
+        "telegramApi": {
+          "id": "M0Bfhe39wLNs7tiO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ext-001",
+              "name": "student_id",
+              "value": "={{ $json.message.text.split(\" \")[1]?.toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "ext-002",
+              "name": "chat_id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "ext-003",
+              "name": "user_name",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2dbf7344-a997-47fd-b0c5-a4ef4d844712",
+      "name": "Extract Student ID1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -656,
+        1824
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nreturn [{\n  json: {\n    found: items.length > 0,\n    count: items.length,\n    ...items[0].json\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        1296
+      ],
+      "id": "cfc2dbbc-36ea-474b-a6fd-8b63cecb7a80",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b4953413-4c96-496d-ab16-1fd1d140c856",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -32,
+        1296
+      ],
+      "id": "39103991-71cd-43f9-ad76-cc51ce5171b1",
+      "name": "If"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Status": {
+      "main": [
+        [
+          {
+            "node": "Notify Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Pending Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Command": {
+      "main": [
+        [
+          {
+            "node": "Extract Student ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Student ID1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Help",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Student ID": {
+      "main": [
+        [
+          {
+            "node": "Lookup Latest Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Latest Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup All Requests": {
+      "main": [
+        [
+          {
+            "node": "Check if Found (Ausencias)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Found (Ausencias)": {
+      "main": [
+        [
+          {
+            "node": "Format Historial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Not Found (Ausencias)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Historial": {
+      "main": [
+        [
+          {
+            "node": "Send Historial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Student ID1": {
+      "main": [
+        [
+          {
+            "node": "Lookup All Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Route by Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Not Found (Estado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3bcb5351b8c63062421a95330f34ea678850e07530b9a7f57755f22ce7932797"
+  }
+}
