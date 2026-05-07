@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1120,
-        1680
+        -1136,
+        2000
       ],
       "id": "51b8ec40-47d4-4edb-b8be-19cb387dd4a5",
       "name": "Telegram Trigger",
@@ -110,14 +110,14 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        256,
-        1168
+        208,
+        1392
       ]
     },
     {
       "parameters": {
         "chatId": "={{ $(\"Extract Student ID\").item.json.chat_id }}",
-        "text": "=✅ *Estado de Solicitud*\n\nID: {{ $json.ID_Solicitud }}\nEstudiante: {{ $json.Nombre }}\n\nTu justificación de ausencia ha sido *aprobada*.\n\nMotivo: {{ $json.Motivo }}\nRazon: {{ $json.Razon }}\nArchivo: {{ $json.URL_Archivo }}\nEnviado: {{ $json.Fecha_Envío }}\nProcesado: {{ $json.Timestamp_Proceso }}\n\nConfianza IA: {{ $json[\"Confianza_%\"] }}%",
+        "text": "=✅ *Estado de Solicitud*\n\nID: {{ $('Extract Student ID').item.json.student_id }}\nEstudiante: {{ $json.Nombre }}\n\nTu justificación de ausencia ha sido *aprobada*.\n\nMotivo: {{ $json.Motivo }}\nRazon: {{ $json.Razon }}\nArchivo: {{ $json.URL_Archivo }}\nEnviado: {{ $json.Fecha_Envío }}\nProcesado: {{ $json.Timestamp_Proceso }}\n\nConfianza IA: {{ $json[\"Confianza_%\"] }}%",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -127,8 +127,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        992
+        432,
+        1312
       ],
       "webhookId": "40eb3f72-3a4c-4f2c-b51b-6a7e1fe48add",
       "credentials": {
@@ -151,8 +151,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        1184
+        432,
+        1504
       ],
       "webhookId": "cf20325a-56e9-470d-b602-9e5c2a548c08",
       "credentials": {
@@ -175,8 +175,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        1376
+        432,
+        1696
       ],
       "webhookId": "e1492018-7290-476d-8e67-e383840bd77b",
       "credentials": {
@@ -197,8 +197,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -656,
-        2048
+        -688,
+        2096
       ],
       "webhookId": "c4edf755-c70e-48db-91a1-30991faa024a",
       "credentials": {
@@ -273,8 +273,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -896,
-        1664
+        -912,
+        1984
       ]
     },
     {
@@ -308,8 +308,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -656,
-        1504
+        -688,
+        1520
       ]
     },
     {
@@ -343,8 +343,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -448,
-        1296
+        -464,
+        1520
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        1472
+        208,
+        1616
       ],
       "webhookId": "537372f7-5833-4267-b739-878cd653c8d7",
       "credentials": {
@@ -407,8 +407,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -448,
-        1824
+        -464,
+        1904
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -447,21 +447,21 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -224,
-        1824
+        -240,
+        1904
       ]
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst studentId = $(\"Extract Student ID1\").first().json.student_id;\nconst chatId = $(\"Extract Student ID1\").first().json.chat_id;\n\nlet message = `📋 *Historial de Ausencias*\\n\\nID Estudiante: ${studentId}\\nTotal de solicitudes: ${items.length}\\n\\n`;\n\nitems.forEach((item, index) => {\n  const data = item.json;\n  const estado = data[\"Estado\"] || \"Pendiente\";\n  const statusEmoji = estado === \"Aprobada\" ? \"✅\" : estado === \"Rechazada\" ? \"❌\" : \"⏳\";\n  message += `${statusEmoji} *Solicitud ${data[\"ID_Solicitud\"]}*\\n`;\n  message += `Estado: ${estado}\\n`;\n  message += `Motivo: ${data[\"Motivo\"]}\\n`;\n  message += `Fecha: ${data[\"Fecha_Env\\u00edo\"]}\\n`;\n  message += `Clasificaci\\u00f3n IA: ${data[\"Clasificaci\\u00f3n_IA\"]} (${data[\"Confianza_%\"]}%)\\n`;\n  if (index < items.length - 1) message += \"\\n\";\n});\n\nreturn [{ \n  json: {\n    chat_id: chatId,\n    message_text: message\n  }\n}];"
+        "jsCode": "const items = $input.all();\nconst studentId = $(\"Extract Student ID1\").first().json.student_id;\nconst chatId = $(\"Extract Student ID1\").first().json.chat_id;\n\nlet message = `📋 *Historial de Ausencias*\\n\\nID Estudiante: ${studentId}\\nTotal de solicitudes: ${items.length}\\n\\n`;\n\nitems.forEach((item, index) => {\n  const data = item.json;\n  const idSolicitud = data[\" ID_solicitud \"] ?? \"N/A\";\n  const estado = data[\"Estado\"] || \"Pendiente\";\n  const statusEmoji = estado === \"Aprobada\" ? \"✅\" : estado === \"Rechazada\" ? \"❌\" : \"⏳\";\n\n  message += `${statusEmoji} *Solicitud ${idSolicitud}*\\n`;\n  message += `Estado: ${estado}\\n`;\n  message += `Motivo: ${data[\"Motivo\"]}\\n`;\n  message += `Fecha: ${data[\"Fecha_Env\\u00edo\"]}\\n`;\n  message += `Clasificaci\\u00f3n IA: ${data[\"Clasificaci\\u00f3n_IA\"]} (${data[\"Confianza_%\"]}%)\\n`;\n  if (index < items.length - 1) message += \"\\n\";\n});\n\nreturn [{ \n  json: {\n    chat_id: chatId,\n    message_text: message\n  }\n}];"
       },
       "id": "07df1577-4ee2-438a-9f73-56c70a3cb0aa",
       "name": "Format Historial",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        1824
+        -16,
+        1808
       ]
     },
     {
@@ -477,8 +477,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        1824
+        208,
+        1808
       ],
       "webhookId": "6389fa64-208b-46ee-89e3-2ddc1b1d1dca",
       "credentials": {
@@ -499,8 +499,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        0,
-        1984
+        -16,
+        2000
       ],
       "webhookId": "cd1c4861-a19f-475f-a828-733b200c49cc",
       "credentials": {
@@ -541,8 +541,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -656,
-        1824
+        -688,
+        1904
       ]
     },
     {
@@ -553,7 +553,7 @@
       "typeVersion": 2,
       "position": [
         -240,
-        1296
+        1520
       ],
       "id": "cfc2dbbc-36ea-474b-a6fd-8b63cecb7a80",
       "name": "Code in JavaScript1"
@@ -585,8 +585,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -32,
-        1296
+        -16,
+        1520
       ],
       "id": "39103991-71cd-43f9-ad76-cc51ce5171b1",
       "name": "If"

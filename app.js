@@ -182,6 +182,7 @@ btn.addEventListener('click', async () => {
     formData.append('file', fileMeta.file);
     formData.append('filename', fileMeta.name);
     formData.append('mime_type', fileMeta.type);
+    formData.append('file_size', fileMeta.size);
   }
 
   try {
